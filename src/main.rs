@@ -4,7 +4,7 @@ use std::io::prelude::*;
 
 fn main() {
     let file_result = File::open("file.csv");
-    let parsed_file: Vec<Vec<&str>>;
+    let mut parsed_file: Vec<Vec<String>> = vec![];
     let mut file = match file_result {
         Ok(file) => file,
         Err(error) => match error.kind() {
@@ -23,12 +23,20 @@ fn main() {
     println!("{:?}", row);
 
     let mut row_counter: usize = 0;
-    
+    let mut column_counter: usize = 0;
+
     for content in row {
-        if last_two_chars(content) == "/n" {
+        let last_two_chars_chars: Option<String> = last_two_chars(content);
+        let last_two_chars_chars_string: String = match last_two_chars_chars {
+            Some(s) => s,
+            None => "Unable to unfold the last_to_chars_chars".to_string(),
+        };
+        if last_two_chars_chars_string == "/n" {
             row_counter += 1;
+            column_counter = 0;
         }
-        parsed_file[row_counter].push(content);
+        parsed_file[row_counter][column_counter].push_str(content);
+        column_counter += 1; 
     }
     println!("{:?}", parsed_file);
 }
